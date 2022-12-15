@@ -28,5 +28,24 @@ def test_create_account(testing_client):
     """
     response = testing_client.post('/accounts', json={'name': 'John Doe', 'currency': '€'})
     assert response.status_code == 200
+    
+    def new_test(testing_client):
+
+    # Create a new account
+    response = testing_client.post('/accounts', json={'name': 'John Doe', 'currency': '€'})
+    assert response.status_code == 200
+    
+    # Get the ID of the newly created account
+    data = response.get_json()
+    account_id = data['id']
+    
+    # Send a PUT request to the /accounts/<id> endpoint with the expected data
+    response = testing_client.put(f'/accounts/{account_id}', json={'name': 'Robin Hood'})
+    assert response.status_code == 200
+    
+    # Assert that the response contains the correct data
+    data = response.get_json()
+    assert data['name'] == 'Robin Hood'
+
 
 
