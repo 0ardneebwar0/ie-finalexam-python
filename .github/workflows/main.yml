@@ -1,1 +1,43 @@
+name: My Workflow
+
+on:
+  push:
+    branches:
+      - dev
+  schedule:
+    - cron: '0 23 * * *'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+      - name: Install dependencies
+        run: |
+          pip install flake8
+          pip install -r requirements.txt
+      - name: Lint with flake8
+        run: |
+          flake8 .
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+      - name: Set up database
+        run: |
+          python -c "import sqlite3; conn = sqlite3.connect('test.db'); conn.close()"
+      - name: Run tests
+        run: |
+          pytest --cov=./
 
